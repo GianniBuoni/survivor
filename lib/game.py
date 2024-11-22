@@ -15,7 +15,7 @@ class Game():
         self.all_sprites = pygame.sprite.Group()
 
         # sprites
-        self.player = Player((400, 700), self.all_sprites)
+        self.player = Player((WINDOW_WIDTH / 2 , WINDOW_HEIGHT / 2), self.all_sprites)
 
     def run(self):
         while self.running:
@@ -32,6 +32,7 @@ class Game():
             self.all_sprites.update(dt)
 
             # draw
+            self.display_surface.fill("black")
             self.all_sprites.draw(self.display_surface)
             pygame.display.update()
         pygame.quit()
