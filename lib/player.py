@@ -1,13 +1,17 @@
 # pyright: reportOptionalMemberAccess=false
 
 import pygame
+from os import walk
 from os.path import join
 from settings import *
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos, groups, collision_group) -> None:
         super().__init__(groups)
-        self.image = pygame.image.load(join("images", "player", "down", "0.png")).convert_alpha()
+        self.load_images()
+        self.state = "down"
+        self.frame_index = 0
+        self.image = self.frames[self.state][self.frame_index]
         self.rect = self.image.get_frect(center = pos)
         self.hitbox_rect = self.rect.inflate(-60, -90)
 
@@ -15,6 +19,18 @@ class Player(pygame.sprite.Sprite):
         self.direction = pygame.Vector2()
         self.speed = 500
         self.collision_group = collision_group
+
+    def load_images(self):
+        self.frames = { "left": [], "down": [], "up": [], "right": [], }
+        dirparent = join("images", "player")
+
+        for dirpath, dirnames, filenames in walk(dirparent):
+            if filenames:
+                state = dirpath.replace(f"{dirparent}/", "")
+                for file in sorted(filenames, key = lambda x: int(x.split(".")[0])):
+                    file_path = join(dirpath, file)
+                    surface = pygame.image.load(file_path).convert_alpha()
+                    self.frames[state].append(surface)
 
     def input(self):
         keys = pygame.key.get_pressed()
