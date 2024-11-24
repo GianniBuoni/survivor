@@ -45,6 +45,19 @@ class Player(pygame.sprite.Sprite):
         self.collision("vertical")
         self.rect.center = self.hitbox_rect.center
 
+    def animate(self, dt):
+        # get state
+        if self.direction.x != 0:
+            self.state = "right" if self.direction.x > 0 else "left"
+        if self.direction.y != 0:
+            self.state = "down" if self.direction.y > 0 else "up"
+
+        # change frames
+        self.frame_index = self.frame_index + (5 * dt) if self.direction else 0
+        state_frames = self.frames[self.state]
+        self.image = state_frames[int(self.frame_index % len(state_frames))]
+
+
     def collision(self, direction: str):
         for sprite in self.collision_group:
             if sprite.rect.colliderect(self.hitbox_rect):
@@ -57,4 +70,5 @@ class Player(pygame.sprite.Sprite):
 
     def update(self, dt):
         self.input()
+        self.animate(dt)
         self.move(dt)
