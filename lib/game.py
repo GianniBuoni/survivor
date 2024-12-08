@@ -56,6 +56,7 @@ class Game():
                     self.all_sprites,
                     self.collision_sprites
                 )
+                self.gun = Gun(self.player, self.all_sprites)
 
     def run(self):
         while self.running:
