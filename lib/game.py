@@ -17,10 +17,12 @@ class Game():
         pygame.display.set_caption("Survivor")
         self.clock = pygame.time.Clock()
         self.running = True
+        self.load_images()
 
         # groups
         self.all_sprites = AllSprites()
         self.collision_sprites = pygame.sprite.Group()
+        self.bullet_sprites = pygame.sprite.Group()
 
         # sprites
         self.map_setup()
@@ -30,9 +32,19 @@ class Game():
         self.shoot_time = 0
         self.shoot_cooldown = 100
 
+    def load_images(self):
+        self.bullet_surface = pygame.image.load(join("images", "gun", "bullet.png")).convert_alpha()
+
     def input(self):
         if pygame.mouse.get_pressed()[0] and self.can_shoot:
-            print("shoot")
+            direction = self.gun.player_direction
+            pos = self.gun.rect.center + direction * 50
+            Bullet(
+                self.bullet_surface,
+                pos,
+                direction,
+                (self.all_sprites, self.bullet_sprites)
+            )
             self.can_shoot = False
             self.shoot_time = pygame.time.get_ticks()
 
