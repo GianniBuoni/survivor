@@ -24,7 +24,7 @@ class Player(pygame.sprite.Sprite):
         self.frames = { "left": [], "down": [], "up": [], "right": [], }
         dirparent = join("images", "player")
 
-        for dirpath, dirnames, filenames in walk(dirparent):
+        for dirpath, _, filenames in walk(dirparent):
             if filenames:
                 state = dirpath.replace(f"{dirparent}/", "")
                 for file in sorted(filenames, key = lambda x: int(x.split(".")[0])):
