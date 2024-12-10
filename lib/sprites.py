@@ -4,7 +4,6 @@ import pygame
 from os.path import join
 from math import atan2, degrees
 
-from lib import player
 from settings import WINDOW_WIDTH, WINDOW_HEIGHT
 
 class Sprite(pygame.sprite.Sprite):
@@ -69,40 +68,3 @@ class Bullet(pygame.sprite.Sprite):
         self.rect.center += self.direction * self.speed * dt
         if pygame.time.get_ticks() - self.spawn_time >= self.lifetime:
             self.kill()
-
-class Enemy(pygame.sprite.Sprite):
-    def __init__(self, pos, frames, groups, player, collision_sprites) -> None:
-        super().__init__(groups)
-        self.player = player
-
-        # image
-        self.frames, self.frame_idx = frames, 0
-        self.image = self.frames[self.frame_idx]
-        self.animation_speed = 6
-
-        # rect
-        self.rect = self.image.get_frect(center = pos)
-        self.hitbox = self.rect.inflate(-20, -40)
-        self.collision_sprites = collision_sprites
-
-        # movement
-        self.direction = pygame.Vector2()
-        self.speed = 350
-
-    # animate
-    def animate(self, dt):
-        self.frame_idx += self.animation_speed * dt
-        self.image = self.frames[int(self.frame_idx) % len(self.frames)]
-
-    def move(self, dt):
-        # get direction
-        player_pos = pygame.Vector2(self.player.rect.center)
-        enemy_pos = pygame.Vector2(self.rect.center)
-        self.direction = (player_pos - enemy_pos).normalize()
-
-        # update rect and hitbox pos
-        self.rect.center += self.direction * self.speed * dt
-
-    def update(self, dt):
-        self.move(dt)
-        self.animate(dt)

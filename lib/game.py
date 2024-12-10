@@ -8,6 +8,7 @@ from random import choice
 
 from lib.groups import AllSprites
 from lib.player import Player
+from lib.enemy import Enemy
 from lib.sprites import *
 from settings import *
 
@@ -125,7 +126,13 @@ class Game():
                     self.running = False
                 if event.type == self.enemy_event:
                     rand_enemy = choice(list(self.enemy_frames.values()))
-                    Enemy(choice(self.spawn_positions), rand_enemy, (self.all_sprites, self.enemy_sprites), self.player, self.collision_sprites)
+                    Enemy(
+                        rand_enemy,
+                        choice(self.spawn_positions),
+                        (self.all_sprites, self.enemy_sprites),
+                        self.player,
+                        self.collision_sprites
+                    )
 
             # input
             self.gun_timer()
