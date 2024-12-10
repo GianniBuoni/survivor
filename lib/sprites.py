@@ -4,6 +4,7 @@ import pygame
 from os.path import join
 from math import atan2, degrees
 
+from lib import player
 from settings import WINDOW_WIDTH, WINDOW_HEIGHT
 
 class Sprite(pygame.sprite.Sprite):
@@ -93,5 +94,15 @@ class Enemy(pygame.sprite.Sprite):
         self.frame_idx += self.animation_speed * dt
         self.image = self.frames[int(self.frame_idx) % len(self.frames)]
 
+    def move(self, dt):
+        # get direction
+        player_pos = pygame.Vector2(self.player.rect.center)
+        enemy_pos = pygame.Vector2(self.rect.center)
+        self.direction = (player_pos - enemy_pos).normalize()
+
+        # update rect and hitbox pos
+        self.rect.center += self.direction * self.speed * dt
+
     def update(self, dt):
+        self.move(dt)
         self.animate(dt)
