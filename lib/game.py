@@ -6,6 +6,7 @@ from os import walk
 from pytmx.util_pygame import load_pygame
 from random import choice
 
+from lib import player
 from lib.groups import AllSprites
 from lib.player import Player
 from lib.enemy import Enemy
@@ -20,6 +21,7 @@ class Game():
         pygame.display.set_caption("Survivor")
         self.clock = pygame.time.Clock()
         self.running = True
+        self.score = 0
 
         # groups
         self.all_sprites = AllSprites()
@@ -72,6 +74,21 @@ class Game():
             )
             self.can_shoot = False
             self.shoot_time = pygame.time.get_ticks()
+
+    def bullet_collision(self):
+        if self.bullet_sprites:
+            for bullet in self.bullet_sprites:
+                collision = pygame.sprite.spritecollide(bullet, self.enemy_sprites, False)
+                if collision:
+                    for sprite in collision:
+                        sprite.destroy()
+                        bullet.kill()
+                        self.score +=1
+
+    def player_collision(self):
+        if pygame.sprite.spritecollide(self.player, self.enemy_sprites, False, pygame.sprite.collide_mask):
+            print(self.score)
+            self.running = False
 
     def gun_timer(self):
         if not self.can_shoot:
@@ -133,10 +150,14 @@ class Game():
                         self.player,
                         self.collision_sprites
                     )
-
+            
             # input
             self.gun_timer()
             self.input()
+
+            # collision checks
+            self.bullet_collision()
+            self.player_collision()
 
             # update
             self.all_sprites.update(dt)
