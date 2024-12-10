@@ -87,3 +87,11 @@ class Enemy(pygame.sprite.Sprite):
         # movement
         self.direction = pygame.Vector2()
         self.speed = 350
+
+    # animate
+    def animate(self, dt):
+        self.frame_idx += self.animation_speed * dt
+        self.image = self.frames[int(self.frame_idx) % len(self.frames)]
+
+    def update(self, dt):
+        self.animate(dt)
