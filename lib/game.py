@@ -6,7 +6,6 @@ from os import walk
 from pytmx.util_pygame import load_pygame
 from random import choice
 
-from lib import player
 from lib.groups import AllSprites
 from lib.player import Player
 from lib.enemy import Enemy
@@ -43,6 +42,15 @@ class Game():
         self.load_images()
         self.map_setup()
 
+        # audio
+        self.shoot_sound = pygame.mixer.Sound(join("audio", "shoot.wav"))
+        self.shoot_sound.set_volume(0.4)
+        self.impact_sound = pygame.mixer.Sound(join("audio", "impact.ogg"))
+        self.impact_sound.set_volume(0.4)
+        self.music = pygame.mixer.Sound(join("audio", "music.wav"))
+        self.music.set_volume(0.2)
+        self.music.play(loops= -1)
+
     def load_images(self):
         # bullet
         self.bullet_surface = pygame.image.load(join("images", "gun", "bullet.png")).convert_alpha()
@@ -64,6 +72,7 @@ class Game():
 
     def input(self):
         if pygame.mouse.get_pressed()[0] and self.can_shoot:
+            self.shoot_sound.play()
             direction = self.gun.player_direction
             pos = self.gun.rect.center + direction * 50
             Bullet(
@@ -80,6 +89,7 @@ class Game():
             for bullet in self.bullet_sprites:
                 collision = pygame.sprite.spritecollide(bullet, self.enemy_sprites, False)
                 if collision:
+                    self.impact_sound.play()
                     for sprite in collision:
                         sprite.destroy()
                         bullet.kill()
